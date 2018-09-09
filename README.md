@@ -60,37 +60,154 @@ Lots of minifb implementation
 ### Frontend API
 #### 계정
 - ID 중복체크
+  - parameters (id)
+  - response code 
+    - 200 ID 중복되지 않음
+    - 409 ID 중복됨
 - 로그인
+  - parameters (id, 비밀번호)
+  - response code 
+    - 200 로그인 성공, JWT Token 발급
+    - 401 로그인 실패   
 - 회원가입
+  - parameters (id, 비밀번호, 이름)
+  - response code 
+    - 201 회원가입 완성
+    - 409 ID 중복됨
 - 임시 비밀번호 발급
-- 비밀번호 변경
-- 별명 변경
-- 소개 변경
+  - header (Auth: JWT Token)
+  - parameters (?)
+  - response code 
+    - 201 임시 비밀번호 발급 성공
+    - 403 권한 없음
+- 비밀번호 변경 (POST)
+  - header (Auth: JWT Token)
+  - parameters (현재 비밀번호, 새 비밀번호)
+  - response code 
+    - 200 비밀번호 변경 성공
+    - 403 틀린 비밀번호 입력 | 권한 없음
+    - 409 현재와 새 비밀번호 동일
+- 별명 변경 (POST)
+  - header (Auth: JWT Token)
+  - parameters (새 별명)
+  - response code 
+    - 200 별명 변경 성공
+    - 403 권한 없음
+    - 409 현재 별명과 새 별명이 동일
+- 소개 변경 (POST)
+  - header (Auth: JWT Token)
+  - parameters (새 소개)
+  - response code 
+    - 200 소개 변경 성공
+    - 403 권한 없음
+    - 409 현재 설명과 새 설명이 동일
 - 재량에 따라, 인증 관련 API(JWT token refresh 등)
 
 #### 글
-- 게시글 업로드
-- 게시글 수정
-- 게시글 삭제
-- 게시글 목록 조회(pagination)
+- 게시글 업로드 (POST)
+  - header (Auth: JWT Token)
+  - parameters (내용)
+  - response code 
+    - 201 게시글 작성 성공
+    - 403 권한 없음
+- 게시글 수정 (PATCH)
+  - header (Auth: JWT Token)
+  - parameters (수정할 글, 새 내용)
+  - response code 
+    - 200 수정 성공 
+    - 403 권한 없음
+- 게시글 삭제 (DELETE)
+  - header (Auth: JWT Token)
+  - parameters (삭제할 게시글)
+  - response code
+    - 200 게시글 삭제 성공 
+    - 403 권한 없음
+- 게시글 목록 조회(pagination) (GET)
+  - header (Auth: JWT Token)
+  - response code 
+    - 200 게시글 목록 조회 성공
+    - 204 게시물이 하나도 존재하지 않음
+    - 403 권한 없음
+- 특정 게시글 조회 (GET)
+  - header (Auth: JWT Token)
+  - response code
+    - 200 특정 게시글 조회 성공
+    - 204 특정 게시물 존재하지 않음
+    - 403 권한 없음
 
 #### 타임라인
-- 내 타임라인
-- 다른 사용자의 타임라인
+- 내 타임라인 (GET)
+  - header (Auth: JWT Token)
+  - response code
+    - 200 타임라인 조회 성공
+    - 403 권한 없음
+- 다른 사용자의 타임라인 (GET)
+  - header (Auth: JWT Token)
+  - response code
+    - 200 다른 사용자의 타임라인 조회 성공
+    - 204 존재하지 않는 사용자
 
 #### 댓글
-- 댓글 추가
-- 댓글 수정
-- 댓글 삭제
-- 특정 게시글의 댓글 목록 조회(pagination)
+- 댓글 추가 (POST)
+  - header (Auth: JWT Token)
+  - parameters (게시글, 내용)
+  - response code
+    - 201 댓글 추가 성공
+    - 400 삭제된 글에 댓글 작성
+    - 403 권한 없음
+- 댓글 수정 (PATCH)
+  - header (Auth: JWT Token)
+  - parameters (게시글, 수정할 댓글, 새 내용)
+  - response code
+    - 200 댓글 수정 성공
+    - 403 권한 없음
+- 댓글 삭제 (DELETE)
+  - header (Auth: JWT Token)
+  - parameters (게시글)
+  - response code
+    - 200 댓글 삭제 성공
+    - 403 권한 없음
+- 특정 게시글의 댓글 목록 조회(pagination) (GET)
+  - header (Auth: JWT Token)
+  - parameters (게시글)
+  - response code
+    - 200 댓글 목록 조회 성공
+    - 403 권한 없음
 
 #### 리액션
-- 글에 리액션/리액션 취소
-- 댓글에 리액션/리액션 취소
-
+- 글에 리액션 작성 (POST)
+  - header (Auth: JWT Token)
+  - parameters (게시글)
+  - response code
+    - 201 글에 리액션 작성 성공
+    - 403 권한 없음
+- 글에 리액션 취소 (DELETE)
+  - header (Auth: JWT Token)
+  - parameters (게시글)
+  - response code
+    - 200 글에 리액션 삭제 성공
+    - 403 권한 없음
+- 댓글에 리액션 작성 (POST)
+  - header (Auth: JWT Token)
+  - parameters (게시글, 댓글)
+  - response code
+    - 201 댓글에 리액션 작성 성공
+    - 403 권한 없음
+- 댓글에 리액션 취소 (DELETE)
+  - header (Auth: JWT Token)
+  - parameters (게시글, 댓글)
+  - response code
+    - 200 댓글에 리액션 삭제 성공
+    - 403 권한 없음
 #### 알림
-- 현재까지 온 알림 목록 조회
+- 현재까지 온 알림 목록 조회 (GET)
+  - header (Auth: JWT Token)
+  - response code
+    - 200 알림 목록 조회 성공
+    - 204 알림 없음
+    - 403 권한 없음
 - 알림 읽음
+  - ? 이해 못함
 
 ### Back Office API
 #### 서버 통계(optional)
